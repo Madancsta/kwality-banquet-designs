@@ -1,26 +1,33 @@
-import { Facebook, Instagram, Twitter, Heart } from "lucide-react";
+import { Facebook, Instagram, Heart } from "lucide-react";
+import logo from "@/assets/KBlogo.jpg";
 
-const Footer = () => {
+interface FooterProps {
+  activeTab: "home" | "menu";
+  setActiveTab: (tab: "home" | "menu") => void;
+}
+
+const Footer = ({ activeTab, setActiveTab }: FooterProps) => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
     { icon: Facebook, href: "#", label: "Facebook" },
     { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Twitter, href: "#", label: "Twitter" },
   ];
 
   const quickLinks = [
-    { label: "Home", href: "#home" },
-    { label: "About Us", href: "#about" },
-    { label: "Our Halls", href: "#halls" },
-    { label: "Services", href: "#services" },
-    { label: "Contact", href: "#contact" },
+    { href: "#home", label: "Home", tab: "home" },
+    { href: "#about", label: "About", tab: "home" },
+    { href: "#halls", label: "Halls", tab: "home" },
+    { href: "#services", label: "Services", tab: "home" },
+    { href: "#contact", label: "Contact", tab: "home" },
+    { href: "#menu", label: "Menu", tab: "menu" },
   ];
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+  const handleLinkClick = (link: typeof quickLinks[0]) => {
+    setActiveTab(link.tab);
+    if (link.tab === "home" && link.href !== "#home") {
+      const element = document.querySelector(link.href);
+      if (element) element.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -31,25 +38,29 @@ const Footer = () => {
         <div className="py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-gold-gradient flex items-center justify-center">
-                <span className="text-primary-foreground font-serif font-bold text-lg">
-                  KB
-                </span>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-white flex items-center justify-center border border-border/50">
+                <img
+                  src={logo}
+                  alt="Kwality Banquet Logo"
+                  className="w-3/4 h-3/4 object-contain"
+                />
               </div>
               <div>
-                <h3 className="font-serif text-xl font-semibold gold-gradient-text">
+                <h3 className="font-serif text-xl font-semibold text-green-700">
                   Kwality Banquet
                 </h3>
                 <p className="text-xs text-muted-foreground tracking-widest uppercase">
-                  Kathmandu, Nepal
+                  Buddhanagar, Kathmandu, Nepal
                 </p>
               </div>
             </div>
+
             <p className="text-muted-foreground max-w-md mb-6">
               Creating unforgettable memories for over a decade. Experience elegance,
               exceptional service, and the perfect setting for your special occasions.
             </p>
+
             {/* Social Links */}
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -71,16 +82,12 @@ const Footer = () => {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(link.href);
-                    }}
+                  <button
+                    onClick={() => handleLinkClick(link)}
                     className="text-muted-foreground hover:text-primary transition-colors duration-300"
                   >
                     {link.label}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -92,7 +99,7 @@ const Footer = () => {
             <ul className="space-y-3 text-muted-foreground">
               <li>
                 <a href="tel:01-12345678" className="hover:text-primary transition-colors">
-                  +977 01-12345678
+                  01-12345678
                 </a>
               </li>
               <li>
@@ -108,7 +115,11 @@ const Footer = () => {
                   kwalitybanquet00@gmail.com
                 </a>
               </li>
-              <li>Kathmandu, Nepal</li>
+              <li>
+                <a href="https://maps.app.goo.gl/wVEqfUJHF38ajgrp9">
+                  Buddhanagar, Kathmandu, Nepal
+                </a>
+              </li>
             </ul>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroBg from "@/assets/hero-banquet.jpg";
+import heroBg from "@/assets/entrance-hero.jpg";
 
 const HeroSection = () => {
   const scrollToSection = (href: string) => {

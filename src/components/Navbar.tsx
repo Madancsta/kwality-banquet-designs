@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/KBlogo.jpg";
 
-const Navbar = () => {
+interface NavbarProps {
+  activeTab: "home" | "menu";
+  setActiveTab: (tab: "home" | "menu") => void;
+}
+
+const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -15,19 +21,22 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { href: "#home", label: "Home" },
-    { href: "#about", label: "About" },
-    { href: "#halls", label: "Halls" },
-    { href: "#services", label: "Services" },
-    { href: "#contact", label: "Contact" },
+    { href: "#home", label: "Home", tab: "home" },
+    { href: "#about", label: "About", tab: "home" },
+    { href: "#halls", label: "Halls", tab: "home" },
+    { href: "#services", label: "Services", tab: "home" },
+    { href: "#contact", label: "Contact", tab: "home" },
+    { href: "#menu", label: "Menu", tab: "menu" },
   ];
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+  const handleClick = (link: typeof navLinks[0]) => {
     setIsMobileMenuOpen(false);
+    setActiveTab(link.tab as "home" | "menu");
+
+    if (link.tab === "home" && link.href !== "#home") {
+      const element = document.querySelector(link.href);
+      if (element) element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -44,12 +53,16 @@ const Navbar = () => {
           href="#home"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection("#home");
+            setActiveTab("home");
           }}
           className="flex items-center gap-3"
         >
-          <div className="w-12 h-12 rounded-full bg-gold-gradient flex items-center justify-center">
-            <span className="text-primary-foreground font-serif font-bold text-lg">KB</span>
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-white flex items-center justify-center border border-border/50">
+            <img
+              src={logo}
+              alt="Kwality Banquet Logo"
+              className="w-3/4 h-3/4 object-contain"
+            />
           </div>
           <div className="hidden sm:block">
             <h1 className="font-serif text-xl font-semibold gold-gradient-text">
@@ -64,29 +77,28 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
+            <button
               key={link.href}
-              href={link.href}
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection(link.href);
-              }}
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
+              onClick={() => handleClick(link)}
+              className={`text-sm font-medium transition-colors duration-300 relative ${
+                activeTab === "menu" && link.tab === "menu"
+                  ? "text-primary"
+                  : "text-foreground/80 hover:text-primary"
+              } after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full`}
             >
               {link.label}
-            </a>
+            </button>
           ))}
         </div>
 
         {/* CTA Button */}
-        <div className="hidden md:block">
-          <Button
-            variant="gold"
-            onClick={() => scrollToSection("#contact")}
-          >
-            Book Now
-          </Button>
-        </div>
+        {activeTab === "home" && (
+          <div className="hidden md:block">
+            <Button variant="gold" onClick={() => handleClick({ href: "#contact", label: "Contact", tab: "home" })}>
+              Book Now
+            </Button>
+          </div>
+        )}
 
         {/* Mobile Menu Toggle */}
         <button
@@ -108,25 +120,23 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
           {navLinks.map((link) => (
-            <a
+            <button
               key={link.href}
-              href={link.href}
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection(link.href);
-              }}
+              onClick={() => handleClick(link)}
               className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors py-2 border-b border-border/50"
             >
               {link.label}
-            </a>
+            </button>
           ))}
-          <Button
-            variant="gold"
-            className="mt-4"
-            onClick={() => scrollToSection("#contact")}
-          >
-            Book Now
-          </Button>
+          {activeTab === "home" && (
+            <Button
+              variant="gold"
+              className="mt-4"
+              onClick={() => handleClick({ href: "#contact", label: "Contact", tab: "home" })}
+            >
+              Book Now
+            </Button>
+          )}
         </div>
       </div>
     </nav>

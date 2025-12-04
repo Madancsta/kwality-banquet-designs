@@ -1,7 +1,7 @@
 import { Users, Maximize, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import hallChhap from "@/assets/hall-chhap.jpg";
-import hallChhanga from "@/assets/hall-chhanga.jpg";
+import hallChhap from "@/assets/main-hall.jpg";
+import hallChhanga from "@/assets/catering-hall.jpg";
 import hallBhirpani from "@/assets/hall-bhirpani.jpg";
 
 const HallsSection = () => {

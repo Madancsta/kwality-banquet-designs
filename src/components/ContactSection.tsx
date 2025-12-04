@@ -32,62 +32,49 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Using Web3Forms for email functionality
-    const web3FormData = new FormData();
-    web3FormData.append("access_key", "YOUR_WEB3FORMS_ACCESS_KEY"); // User needs to replace this
-    web3FormData.append("name", formData.name);
-    web3FormData.append("email", formData.email);
-    web3FormData.append("phone", formData.phone);
-    web3FormData.append("event_type", formData.eventType);
-    web3FormData.append("date", formData.date);
-    web3FormData.append("guests", formData.guests);
-    web3FormData.append("hall", formData.hall);
-    web3FormData.append("message", formData.message);
-    web3FormData.append("subject", `New Booking Inquiry from ${formData.name}`);
-
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch(`http://localsite:8000/api/send-email`, {
         method: "POST",
-        body: web3FormData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
-      if (data.success) {
-        setIsSubmitted(true);
-        toast({
-          title: "Inquiry Sent!",
-          description: "We'll get back to you within 24 hours.",
-        });
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          eventType: "",
-          date: "",
-          guests: "",
-          hall: "",
-          message: "",
-        });
-      } else {
-        throw new Error("Submission failed");
-      }
-    } catch {
-      toast({
-        title: "Message Received",
-        description: "Thank you for your inquiry. We'll contact you soon!",
-      });
+      if (!response.ok) throw new Error(data.error || "Email failed");
+
       setIsSubmitted(true);
+      toast({
+        title: "Inquiry Sent!",
+        description: "We'll get back to you within 24 hours.",
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        eventType: "",
+        date: "",
+        guests: "",
+        hall: "",
+        message: "",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed",
+        description: "Could not send message. Please try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+
   const contactInfo = [
     {
       icon: Phone,
       title: "Phone",
-      value: "+977 01-12345678",
+      value: "01-12345678",
       link: "tel:01-12345678",
     },
     {
@@ -99,13 +86,13 @@ const ContactSection = () => {
     {
       icon: MapPin,
       title: "Location",
-      value: "Kathmandu, Nepal",
-      link: "#",
+      value: "Buddhanagar, Kathmandu, Nepal",
+      link: "https://maps.app.goo.gl/wVEqfUJHF38ajgrp9",
     },
     {
       icon: Clock,
       title: "Working Hours",
-      value: "9 AM - 9 PM, Daily",
+      value: "9 AM - 7 PM, Daily",
       link: "#",
     },
   ];
@@ -143,7 +130,7 @@ const ContactSection = () => {
               >
                 <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center shrink-0 group-hover:bg-gold-gradient transition-colors">
                   <info.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
-                </div>
+                </div>  
                 <div>
                   <p className="text-sm text-muted-foreground">{info.title}</p>
                   <p className="font-medium text-foreground">{info.value}</p>
@@ -152,7 +139,7 @@ const ContactSection = () => {
             ))}
 
             {/* Map placeholder */}
-            <div className="mt-8 rounded-lg overflow-hidden border border-border/50">
+            {/* <div className="mt-8 rounded-lg overflow-hidden border border-border/50">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113032.64603902438!2d85.2550855!3d27.7089603!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb198a307baabf%3A0xb5137c1bf18db1ea!2sKathmandu%2044600%2C%20Nepal!5e0!3m2!1sen!2sus!4v1699999999999!5m2!1sen!2sus"
                 width="100%"
@@ -163,7 +150,7 @@ const ContactSection = () => {
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Kwality Banquet Location"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Booking Form */}
